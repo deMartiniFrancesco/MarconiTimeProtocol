@@ -1,6 +1,6 @@
 on: push
 
-name: Sample Workflow
+name: Flutter code checkout
 
 jobs:
   build:
