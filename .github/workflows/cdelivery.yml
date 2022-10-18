@@ -1,0 +1,30 @@
+name: CDelivery
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  security_hardening:
+    name: Check security hardening
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone the repository
+      uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # v2.3.4
+    - name: Ensure SHA pinned actions
+      uses: zgosalvez/github-actions-ensure-sha-pinned-actions@e70e07ef05f0a3bf1483fde3c50eeab9c1805041 # v1.0.1
+
+  draft_release:
+    name: Draft a release
+    needs: security_hardening
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone the repository
+      uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # v2.3.4
+    - name: Draft the release
+      id: release-drafter
+      uses: release-drafter/release-drafter@3782ccd1a495040818a9e5d0e8bc4ed22d3b1361 # v5.12.1
+      with:
+        prerelease: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - release/v*
+
+jobs:
+  security_hardening:
+    name: Check security hardening
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone the repository
+      uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # v2.3.4
+    - name: Ensure SHA pinned actions
+      uses: zgosalvez/github-actions-ensure-sha-pinned-actions@e70e07ef05f0a3bf1483fde3c50eeab9c1805041 # v1.0.1
+
+  testing:
+    name: Run ${{ matrix.category }} testing
+    needs: security_hardening
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        category: [static, unit, widget]
+      fail-fast: false
+    steps:
+    - name: Clone the repository
+      uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # v2.3.4
+      with:
+        path: code
+    - name: Get Flutter version
+      id: get-flutter-version
+      uses: zgosalvez/github-actions-get-flutter-version-env@2106839043b63948638cf22ee33718862fdcc57d # v1.1.2
+      with:
+        pubspec-file-path: code/pubspec.yaml
+    - name: Cache Flutter
+      id: flutter-cache
+      uses: actions/cache@0781355a23dac32fd3bac414512f4b903437991a # v2.1.3
+      with:
+        path: flutter
+        key: ${{ env.cache-name }}-ubuntu-latest-${{ steps.get-flutter-version.outputs.version }}-${{ hashFiles('code/pubspec.lock') }}
+        restore-keys: |
+          ${{ env.cache-name }}-ubuntu-latest-${{ steps.get-flutter-version.outputs.version }}-
+          ${{ env.cache-name }}-ubuntu-latest-
+          ${{ env.cache-name }}-
+      env:
+        cache-name: flutter-cache
+    - name: Clone the Flutter repository
+      if: steps.flutter-cache.outputs.cache-hit != 'true'
+      uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # v2.3.4
+      with:
+        repository: flutter/flutter
+        ref: ${{ steps.get-flutter-version.outputs.version }}
+        path: flutter
+    - name: Add the flutter tool to the path
+      run: |
+        echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
+        echo "$GITHUB_WORKSPACE/flutter/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
+    - name: Populate the Flutter tool's cache of binary artifacts
+      if: steps.flutter-cache.outputs.cache-hit != 'true'
+      run: |
+        flutter config --no-analytics
+        flutter precache
+    - name: Get Flutter packages
+      run: flutter pub get
+      working-directory: code
+
+    # static testing
+    - name: Analyze Flutter
+      if: matrix.category == 'static'
+      uses: zgosalvez/github-actions-analyze-flutter@f5a4e9edfc655081eb438cf5901f1d48c9e5d281 # v1.3.2
+      with:
+        fail-on-warnings: true
+        working-directory: code
+    
+    # unit testing
+    - name: Run Flutter ${{ matrix.category }} tests
+      if: matrix.category != 'static'
+      run: flutter test --no-pub --coverage --coverage-path=./coverage/lcov.${{ matrix.category }}.info test/${{ matrix.category }}s
+      working-directory: code
+    - name: Upload code coverage to GitHub
+      if: matrix.category != 'static'
+      uses: actions/upload-artifact@726a6dcd0199f578459862705eed35cda05af50b # v2.2.1
+      with:
+        name: code-coverage
+        path: code/coverage/lcov.${{ matrix.category }}.info
+
+  coverage_report:
+    name: Generate coverage report
+    needs: testing
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone the repository
+      uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # v2.3.4
+    - name: Download code coverage from GitHub
+      uses: actions/download-artifact@f144d3c3916a86f4d6b11ff379d17a49d8f85dbc # v2.0.7
+      with:
+        name: code-coverage
+        path: coverage
+    - name: Report code coverage
+      uses: zgosalvez/github-actions-report-lcov@dbddb87c1dcd9525e7ebb88700278d58ec7b2f9e # v1.1.0
+      with:
+        coverage-files: coverage/lcov.*.info
+        minimum-coverage: 90
+        artifact-name: code-coverage-report
+        github-token: ${{ secrets.GITHUB_TOKEN }}
