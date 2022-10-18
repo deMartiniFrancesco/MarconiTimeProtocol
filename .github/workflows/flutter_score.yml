@@ -1,6 +1,7 @@
 name: Flutter score check
-on: [push, pull_request]
-
+on:
+  release:
+    types: [ published ]
 jobs:
 
   package-analysis:
