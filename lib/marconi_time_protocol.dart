@@ -1,7 +1,12 @@
-import 'marconi_time_protocol_platform_interface.dart';
+
+import 'package:flutter/services.dart';
 
 class MarconiTimeProtocol {
-  Future<String?> getPlatformVersion() {
-    return MarconiTimeProtocolPlatform.instance.getPlatformVersion();
+  static const MethodChannel _channel = MethodChannel('marconi_time_protocol');
+
+
+  static Future<String> getPlatformVersion() async {
+    return await _channel.invokeMethod('getPlatformVersion');
   }
+
 }
