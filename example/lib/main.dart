@@ -17,7 +17,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  final _marconiTimeProtocolPlugin = MarconiTimeProtocol();
 
   @override
   void initState() {
@@ -32,7 +31,7 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _marconiTimeProtocolPlugin.getPlatformVersion() ?? 'Unknown platform version';
+          await MarconiTimeProtocol.getPlatformVersion();
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
