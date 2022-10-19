@@ -1,6 +1,6 @@
-# mtp_example
+# marconi_time_protocol_example
 
-Demonstrates how to use the mtp plugin.
+Demonstrates how to use the marconi_time_protocol plugin.
 
 ## Getting Started
 

@@ -1,10 +1,10 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mtp/mtp_method_channel.dart';
+import 'package:marconi_time_protocol/marconi_time_protocol_method_channel.dart';
 
 void main() {
-  MethodChannelMtp platform = MethodChannelMtp();
-  const MethodChannel channel = MethodChannel('mtp');
+  MethodChannelMarconiTimeProtocol platform = MethodChannelMarconiTimeProtocol();
+  const MethodChannel channel = MethodChannel('marconi_time_protocol');
 
   TestWidgetsFlutterBinding.ensureInitialized();
 

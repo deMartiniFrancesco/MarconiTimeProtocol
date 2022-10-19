@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import 'mtp_platform_interface.dart';
+import 'marconi_time_protocol_platform_interface.dart';
 
-/// An implementation of [MtpPlatform] that uses method channels.
-class MethodChannelMtp extends MtpPlatform {
+/// An implementation of [MarconiTimeProtocolPlatform] that uses method channels.
+class MethodChannelMarconiTimeProtocol extends MarconiTimeProtocolPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
-  final methodChannel = const MethodChannel('mtp');
+  final methodChannel = const MethodChannel('marconi_time_protocol');
 
   @override
   Future<String?> getPlatformVersion() async {

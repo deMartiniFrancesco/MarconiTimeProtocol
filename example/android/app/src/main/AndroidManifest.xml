@@ -1,6 +1,7 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.marconi_time_protocol_example">
    <application
-        android:label="mtp_example"
+        android:label="marconi_time_protocol_example"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

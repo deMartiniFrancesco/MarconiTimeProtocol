@@ -1,5 +1,5 @@
-name: mtp
-description: Marconi Time Protocol flutter integration
+name: marconi_time_protocol
+description: Custome protocol for manage school request.
 version: 0.0.1
 homepage:
 
@@ -35,8 +35,8 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.example.mtp
-        pluginClass: MtpPlugin
+        package: com.example.marconi_time_protocol
+        pluginClass: MarconiTimeProtocolPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
