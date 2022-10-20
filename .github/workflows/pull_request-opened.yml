@@ -15,8 +15,7 @@ jobs:
         uses: zgosalvez/github-actions-ensure-sha-pinned-actions@v1.0.1 # Replace this
         with:
            allowlist: |
-              aws-actions/          # Trust all actions published by aws-actions
-        
+              aws-actions
 
   assign_author:
     name: Assign Author to the Pull Request
