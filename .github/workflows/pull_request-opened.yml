@@ -14,8 +14,8 @@ jobs:
       - name: Ensure SHA pinned actions
         uses: zgosalvez/github-actions-ensure-sha-pinned-actions@v1.0.1 # Replace this
         with:
-          allowlist: |
-            actions/
+           allowlist: |
+              aws-actions/          # Trust all actions published by aws-actions
         
 
   assign_author:
