@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Assign Author
-      uses: technote-space/assign-author@v1.6.0
+      uses: technote-space/assign-author@v1.6.1
 
 
   pr-labeler:
